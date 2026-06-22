@@ -1,6 +1,14 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'development-secret';
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+
+  if (!secret) {
+    throw new Error('JWT_SECRET is not set');
+  }
+
+  return secret;
+}
 
 export type AuthTokenPayload = {
   userId: string;
@@ -8,9 +16,9 @@ export type AuthTokenPayload = {
 };
 
 export function signAuthToken(payload: AuthTokenPayload) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: '7d' });
 }
 
 export function verifyAuthToken(token: string) {
-  return jwt.verify(token, JWT_SECRET) as AuthTokenPayload;
+  return jwt.verify(token, getJwtSecret()) as AuthTokenPayload;
 }

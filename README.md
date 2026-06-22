@@ -4,7 +4,8 @@ A Next.js platform for Swedish students preparing for Matematik- och fysikprovet
 
 ## Tech Stack
 
-- Next.js 14+ (App Router) + TypeScript
+- Next.js 16 (App Router, 14+ requirement satisfied)
+- TypeScript
 - Tailwind CSS
 - PostgreSQL (`postgres` package)
 - JWT auth (`jsonwebtoken`) + password hashing (`bcrypt`)

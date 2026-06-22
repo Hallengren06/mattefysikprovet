@@ -42,3 +42,5 @@ CREATE TABLE IF NOT EXISTS user_performance (
   success_rate NUMERIC(5,2) NOT NULL DEFAULT 0,
   last_attempted TIMESTAMPTZ
 );
+
+COMMENT ON COLUMN user_performance.last_attempted IS 'NULL means the user has not attempted this topic yet.';
