@@ -37,7 +37,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'title, youtubeId och category krävs' }, { status: 400 });
   }
 
-  const video = addVideo({ title, description: description ?? '', youtubeId, category, topic: topic ?? '' });
+  const video = addVideo({
+    title,
+    description: typeof description === 'string' ? description : '',
+    youtubeId,
+    category,
+    topic: typeof topic === 'string' ? topic : ''
+  });
   return NextResponse.json(video, { status: 201 });
 }
 

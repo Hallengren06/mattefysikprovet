@@ -16,6 +16,10 @@ function extractYouTubeId(input: string): string {
   return input;
 }
 
+function isValidYouTubeId(value: string) {
+  return /^[A-Za-z0-9_-]{11}$/.test(value);
+}
+
 async function fetchVideosFromApi() {
   const res = await fetch('/api/videos');
   return (await res.json()) as Video[];
@@ -199,7 +203,7 @@ export default function AdminPageClient() {
                 />
               </div>
 
-              {form.youtubeUrl && !previewError && (
+              {form.youtubeUrl && isValidYouTubeId(extractYouTubeId(form.youtubeUrl)) && !previewError && (
                 <div className="rounded-xl overflow-hidden border border-mafy-border">
                   <img
                     src={`https://img.youtube.com/vi/${extractYouTubeId(form.youtubeUrl)}/hqdefault.jpg`}

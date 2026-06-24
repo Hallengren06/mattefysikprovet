@@ -80,7 +80,7 @@ export default function ResultsPage() {
             <tbody>
               {results.map((result) => (
                 <tr key={result.id} className="border-t border-mafy-border text-gray-200">
-                  <td className="px-4 py-3">{result.testName || `Prov ${result.testId}`}</td>
+                  <td className="px-4 py-3">{result.testName}</td>
                   <td className="px-4 py-3">{result.category}</td>
                   <td className="px-4 py-3 font-semibold text-white">{result.percentage}%</td>
                   <td className="px-4 py-3">{result.correctAnswers}/{result.totalQuestions}</td>

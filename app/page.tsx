@@ -252,7 +252,7 @@ export default function HomePage() {
               {/* Google login */}
               <button
                 type="button"
-                onClick={() => setMessage('Google-inloggning är inte konfigurerad ännu.')}
+                onClick={() => setMessage('Google-inloggning kommer snart. Använd e-post/lösenord tills vidare.')}
                 className="w-full bg-mafy-card2 border border-mafy-border hover:border-white/20 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-3 transition-colors"
               >
                 <GoogleIcon />

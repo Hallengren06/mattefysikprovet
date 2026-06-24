@@ -5,7 +5,7 @@ import { getFirebaseAuth } from '@/lib/firebase-admin';
 
 const SESSION_COOKIE_NAME = 'mafy_session';
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 5;
-const SESSION_EXPIRES_MS = SESSION_MAX_AGE_SECONDS * 1000;
+const SESSION_DURATION_MS = SESSION_MAX_AGE_SECONDS * 1000;
 
 export type SessionUser = {
   uid: string;
@@ -36,7 +36,7 @@ export function getSessionCookieOptions() {
 }
 
 export async function createSessionCookie(idToken: string) {
-  return getFirebaseAuth().createSessionCookie(idToken, { expiresIn: SESSION_EXPIRES_MS });
+  return getFirebaseAuth().createSessionCookie(idToken, { expiresIn: SESSION_DURATION_MS });
 }
 
 export async function getRequestSessionUser(request: NextRequest): Promise<SessionUser | null> {
