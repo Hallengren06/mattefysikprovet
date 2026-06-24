@@ -59,7 +59,8 @@ export async function POST(request: Request) {
     result.cookies.set(getSessionCookieName(), sessionCookie, getSessionCookieOptions());
 
     return result;
-  } catch {
+  } catch (error) {
+    console.error('Login error', error);
     return NextResponse.json({ message: 'Inloggningen misslyckades. Försök igen.' }, { status: 500 });
   }
 }

@@ -49,7 +49,8 @@ export async function getRequestSessionUser(request: NextRequest): Promise<Sessi
   try {
     const decodedToken = await getFirebaseAuth().verifySessionCookie(sessionCookie, true);
     return toSessionUser(decodedToken);
-  } catch {
+  } catch (error) {
+    console.warn('Request session verification failed', error);
     return null;
   }
 }
@@ -65,7 +66,8 @@ export async function getServerSessionUser(): Promise<SessionUser | null> {
   try {
     const decodedToken = await getFirebaseAuth().verifySessionCookie(sessionCookie, true);
     return toSessionUser(decodedToken);
-  } catch {
+  } catch (error) {
+    console.warn('Server session verification failed', error);
     return null;
   }
 }

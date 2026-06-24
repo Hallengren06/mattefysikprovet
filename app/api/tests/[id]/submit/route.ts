@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFirestoreDb } from '@/lib/firebase-admin';
 import { getRequestSessionUser } from '@/lib/session';
 
+const DEFAULT_TOTAL_QUESTIONS = 75;
+
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const user = await getRequestSessionUser(request);
 
@@ -18,7 +20,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     correctAnswers?: number;
   };
 
-  const totalQuestions = Math.max(1, Number(body.totalQuestions ?? 75));
+  const totalQuestions = Math.max(1, Number(body.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS));
   const correctAnswers = Math.min(Math.max(0, Number(body.correctAnswers ?? 0)), totalQuestions);
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
 

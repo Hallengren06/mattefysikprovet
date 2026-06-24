@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       correctAnswers: data.correctAnswers ?? 0,
       totalQuestions: data.totalQuestions ?? 0,
       percentage: data.percentage ?? 0,
-      createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : new Date(0).toISOString()
+      createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : new Date().toISOString()
     };
   });
 

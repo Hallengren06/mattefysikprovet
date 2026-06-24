@@ -73,7 +73,8 @@ export async function POST(request: Request) {
     result.cookies.set(getSessionCookieName(), sessionCookie, getSessionCookieOptions());
 
     return result;
-  } catch {
+  } catch (error) {
+    console.error('Register error', error);
     return NextResponse.json({ message: 'Registreringen misslyckades. Försök igen.' }, { status: 500 });
   }
 }
