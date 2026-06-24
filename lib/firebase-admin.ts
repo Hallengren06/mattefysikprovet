@@ -6,7 +6,7 @@ function getRequiredEnv(name: string): string {
   const value = process.env[name];
 
   if (!value) {
-    throw new Error(`${name} is not set`);
+    throw new Error(`${name} is not set (configure it in .env.local or your deployment environment)`);
   }
 
   return value;

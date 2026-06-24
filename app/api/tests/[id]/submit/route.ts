@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFirestoreDb } from '@/lib/firebase-admin';
 import { getRequestSessionUser } from '@/lib/session';
 
-// Default question count for the standard full-length Matematikprov flow.
+// Default question count for the current full-length test flow (both Matematik/Fysik pages currently use this length).
+// If per-test metadata is added later, this value should come from that configuration instead.
 const DEFAULT_TOTAL_QUESTIONS = 75;
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {

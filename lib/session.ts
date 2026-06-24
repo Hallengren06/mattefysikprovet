@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server';
 import { getFirebaseAuth } from '@/lib/firebase-admin';
 
 const SESSION_COOKIE_NAME = 'mafy_session';
+// Keep sessions short-lived for shared-school-device safety while avoiding daily re-login friction.
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 5;
 const SESSION_DURATION_MS = SESSION_MAX_AGE_SECONDS * 1000;
 
