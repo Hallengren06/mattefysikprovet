@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { TestResultSubmitForm } from '@/components/TestResultSubmitForm';
 
 export default async function TestPage({ params }: { params: Promise<{ testId: string }> }) {
   const { testId } = await params;
@@ -31,6 +32,13 @@ export default async function TestPage({ params }: { params: Promise<{ testId: s
         </div>
       </div>
 
+      <TestResultSubmitForm
+        testId={testId}
+        testName={`Prov ${testId}`}
+        category="Matematik"
+        totalQuestions={75}
+      />
+
       <div className="bg-mafy-card border border-mafy-border rounded-2xl p-5">
         <h2 className="font-semibold text-white mb-2">Ämnesområden</h2>
         <div className="flex flex-wrap gap-2">
@@ -46,4 +54,3 @@ export default async function TestPage({ params }: { params: Promise<{ testId: s
     </div>
   );
 }
-

@@ -1,12 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getVideos, addVideo, deleteVideo } from '@/lib/videos';
+import { getRequestSessionUser, isAdminEmail } from '@/lib/session';
 
 export function GET() {
   const videos = getVideos();
   return NextResponse.json(videos);
 }
 
+async function requireAdmin(request: NextRequest) {
+  const user = await getRequestSessionUser(request);
+
+  if (!user || !isAdminEmail(user.email)) {
+    return NextResponse.json({ error: 'Du saknar behörighet' }, { status: 403 });
+  }
+
+  return null;
+}
+
 export async function POST(request: NextRequest) {
+  const adminError = await requireAdmin(request);
+
+  if (adminError) {
+    return adminError;
+  }
+
   const body = await request.json();
   const { title, description, youtubeId, category, topic } = body as {
     title: string;
@@ -25,6 +42,12 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const adminError = await requireAdmin(request);
+
+  if (adminError) {
+    return adminError;
+  }
+
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id saknas' }, { status: 400 });

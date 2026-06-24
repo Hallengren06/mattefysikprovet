@@ -84,7 +84,8 @@ export default function HomePage() {
       if (res.ok) {
         window.location.href = '/dashboard';
       } else {
-        setMessage('Felaktiga inloggningsuppgifter. Försök igen.');
+        const payload = (await res.json()) as { message?: string };
+        setMessage(payload.message ?? 'Felaktiga inloggningsuppgifter. Försök igen.');
       }
     } catch {
       setMessage('Något gick fel. Försök igen.');

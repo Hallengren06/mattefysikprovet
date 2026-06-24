@@ -4,11 +4,11 @@ A Next.js platform for Swedish students preparing for Matematik- och fysikprovet
 
 ## Tech Stack
 
-- Next.js 16 (App Router, 14+ requirement satisfied)
+- Next.js 16 (App Router)
 - TypeScript
 - Tailwind CSS
-- PostgreSQL (`postgres` package)
-- JWT auth (`jsonwebtoken`) + password hashing (`bcrypt`)
+- Firebase Authentication (email/password)
+- Firestore (user data + test results)
 
 ## Local Setup
 
@@ -24,18 +24,36 @@ A Next.js platform for Swedish students preparing for Matematik- och fysikprovet
    cp .env.example .env.local
    ```
 
-3. Start development server:
+3. Fill in Firebase values in `.env.local`:
+
+   - `NEXT_PUBLIC_FIREBASE_API_KEY` from Firebase Web app settings
+   - `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` from a Firebase service account key
+   - `FIREBASE_ADMIN_EMAILS` as comma-separated emails allowed to access `/admin`
+
+4. Start development server:
 
    ```bash
    npm run dev
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000).
+5. Open [http://localhost:3000](http://localhost:3000).
+
+## Firebase Configuration
+
+- Enable **Authentication → Email/Password** in Firebase console.
+- Create a **Firestore database** in production mode.
+- Deploy Firestore rules from `firestore.rules`.
+
+## Vercel Deployment
+
+1. Import the GitHub repository in Vercel.
+2. Add all environment variables from `.env.example` in Vercel Project Settings.
+3. Redeploy.
 
 ## Project Structure
 
 - `app/` - App Router pages, layouts, and API routes
 - `components/` - Reusable UI components
-- `lib/` - Database, auth, and utility helpers
+- `lib/` - Firebase/session helpers and utilities
 - `styles/` - Global styling
-- `schema.sql` - Initial PostgreSQL schema
+- `firestore.rules` - Firestore access rules

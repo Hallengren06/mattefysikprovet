@@ -22,7 +22,8 @@ export default function RegisterPage() {
         setMessage('✓ Konto skapat! Omdirigerar...');
         setTimeout(() => (window.location.href = '/dashboard'), 1500);
       } else {
-        setMessage('Något gick fel. Försök igen.');
+        const payload = (await res.json()) as { message?: string };
+        setMessage(payload.message ?? 'Något gick fel. Försök igen.');
       }
     } catch {
       setMessage('Något gick fel. Försök igen.');
@@ -101,4 +102,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-

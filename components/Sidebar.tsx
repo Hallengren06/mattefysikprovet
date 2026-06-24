@@ -149,7 +149,7 @@ const sections: NavSection[] = [
   }
 ];
 
-export function Sidebar() {
+export function Sidebar({ isAdmin }: { isAdmin: boolean }) {
   const pathname = usePathname();
 
   function isActive(href: string) {
@@ -160,7 +160,6 @@ export function Sidebar() {
 
   return (
     <aside className="flex flex-col h-full w-[220px] min-w-[220px] bg-mafy-sidebar border-r border-mafy-border">
-      {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-mafy-border">
         <MafyLogo size={36} />
         <div>
@@ -169,7 +168,6 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {sections.map((section) => (
           <div key={section.title} className="mb-3">
@@ -203,21 +201,21 @@ export function Sidebar() {
           </div>
         ))}
 
-        {/* Admin link */}
-        <div className="mt-4 pt-4 border-t border-mafy-border">
-          <Link
-            href="/admin"
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-              pathname === '/admin' ? 'bg-brand text-white font-medium' : 'text-gray-400 hover:text-white hover:bg-white/5'
-            }`}
-          >
-            <span className="text-gray-500"><SettingsIcon /></span>
-            <span>Admin</span>
-          </Link>
-        </div>
+        {isAdmin && (
+          <div className="mt-4 pt-4 border-t border-mafy-border">
+            <Link
+              href="/admin"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname === '/admin' ? 'bg-brand text-white font-medium' : 'text-gray-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <span className="text-gray-500"><SettingsIcon /></span>
+              <span>Admin</span>
+            </Link>
+          </div>
+        )}
       </nav>
 
-      {/* Upgrade box */}
       <div className="p-3 m-3 rounded-xl bg-gradient-to-br from-brand/30 to-accent/10 border border-brand/30">
         <div className="flex items-center gap-2 text-yellow-400 mb-1">
           <CrownIcon />

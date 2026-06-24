@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import type { SessionUser } from '@/lib/session';
 
 const topLinks = [
   { label: 'Hem', href: '/dashboard' },
@@ -12,12 +14,32 @@ const topLinks = [
   { label: 'Priser', href: '/priser' }
 ];
 
-export function TopNav() {
+function getInitials(nameOrEmail: string) {
+  const clean = nameOrEmail.trim();
+
+  if (!clean) return 'AN';
+
+  const parts = clean.includes('@') ? clean.split('@')[0].split(/[._-]/) : clean.split(' ');
+  const filtered = parts.filter(Boolean);
+
+  if (filtered.length === 0) return 'AN';
+  if (filtered.length === 1) return filtered[0].slice(0, 2).toUpperCase();
+
+  return `${filtered[0][0] ?? ''}${filtered[1][0] ?? ''}`.toUpperCase();
+}
+
+export function TopNav({ user }: { user: SessionUser }) {
   const pathname = usePathname();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    await fetch('/api/auth/logout', { method: 'POST' });
+    window.location.href = '/';
+  }
 
   return (
     <header className="h-14 border-b border-mafy-border bg-mafy-bg/95 backdrop-blur flex items-center px-6 gap-6">
-      {/* Nav links */}
       <nav className="flex items-center gap-1 flex-1">
         {topLinks.map((link) => {
           const active = pathname === link.href || (link.href !== '/dashboard' && pathname.startsWith(link.href));
@@ -36,27 +58,16 @@ export function TopNav() {
         })}
       </nav>
 
-      {/* Right side */}
       <div className="flex items-center gap-3">
-        {/* Dark mode icon (decorative) */}
-        <button className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 transition-colors">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
+        <button
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="text-xs text-gray-300 hover:text-white transition-colors disabled:opacity-60"
+        >
+          {loggingOut ? 'Loggar ut...' : 'Logga ut'}
         </button>
-
-        {/* Notification */}
-        <button className="relative w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 transition-colors">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-accent" />
-        </button>
-
-        {/* Avatar */}
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-accent flex items-center justify-center text-xs font-bold text-white">
-          JS
+          {getInitials(user.name || user.email)}
         </div>
       </div>
     </header>
