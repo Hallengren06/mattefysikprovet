@@ -9,7 +9,13 @@ function getRequiredEnv(name: string): string {
     throw new Error(`${name} is not set (configure it in .env.local or your deployment environment)`);
   }
 
-  return value;
+  const normalizedValue = value.trim();
+
+  if (!normalizedValue) {
+    throw new Error(`${name} is empty (configure it in .env.local or your deployment environment)`);
+  }
+
+  return normalizedValue;
 }
 
 function getFirebaseAdminApp() {
