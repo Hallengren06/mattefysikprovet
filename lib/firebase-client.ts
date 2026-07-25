@@ -15,13 +15,16 @@ function getRequiredClientEnv(name: string, value: string | undefined) {
   return value;
 }
 
+/**
+ * authDomain is optional because most Firebase projects use the default
+ * `${projectId}.firebaseapp.com` domain for browser authentication.
+ */
 function getFirebaseClientConfig() {
   const projectId = getRequiredClientEnv('NEXT_PUBLIC_FIREBASE_PROJECT_ID', publicFirebaseEnv.projectId);
 
   return {
     apiKey: getRequiredClientEnv('NEXT_PUBLIC_FIREBASE_API_KEY', publicFirebaseEnv.apiKey),
     projectId,
-    // Most Firebase projects use the default auth domain derived from the project ID.
     authDomain: publicFirebaseEnv.authDomain || `${projectId}.firebaseapp.com`
   };
 }

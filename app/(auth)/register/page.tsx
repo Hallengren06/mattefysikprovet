@@ -8,6 +8,8 @@ import { createServerSession, mapAuthError } from '@/lib/auth-client';
 import { normalizeEmail } from '@/lib/auth-utils';
 import { getFirebaseClientAuth, googleAuthProvider } from '@/lib/firebase-client';
 
+const REDIRECT_DELAY_MS = 1200;
+
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
@@ -34,7 +36,7 @@ export default function RegisterPage() {
       setMessage('✓ Konto skapat! Omdirigerar...');
       setTimeout(() => {
         window.location.href = '/dashboard';
-      }, 1200);
+      }, REDIRECT_DELAY_MS);
     } catch (error) {
       setMessage(mapAuthError(error, 'Registreringen misslyckades. Försök igen.'));
     } finally {

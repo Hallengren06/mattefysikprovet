@@ -4,6 +4,13 @@ import { normalizeEmail } from '@/lib/auth-utils';
 import { getFirebaseAuth, getFirestoreDb } from '@/lib/firebase-admin';
 import { createSessionCookie, getSessionCookieName, getSessionCookieOptions } from '@/lib/session';
 
+type UserSessionDocument = {
+  email: string;
+  name?: string;
+  createdAt?: FirebaseFirestore.FieldValue;
+  updatedAt: FirebaseFirestore.FieldValue;
+};
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { idToken?: string; name?: string };
@@ -23,12 +30,7 @@ export async function POST(request: Request) {
     const name = body.name?.trim() || decodedToken.name?.trim() || null;
     const userRef = getFirestoreDb().collection('users').doc(decodedToken.uid);
     const snapshot = await userRef.get();
-    const userData: {
-      email: string;
-      name?: string;
-      createdAt?: FirebaseFirestore.FieldValue;
-      updatedAt: FirebaseFirestore.FieldValue;
-    } = {
+    const userData: UserSessionDocument = {
       email,
       updatedAt: FieldValue.serverTimestamp()
     };

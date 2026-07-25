@@ -3,6 +3,9 @@
 import type { User } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 
+const SESSION_CREATION_ERROR_MESSAGE = 'Kunde inte skapa en inloggad session.';
+
+// Produktytan är svensk, så authmeddelanden visas på svenska för användaren.
 export async function createServerSession(user: User, name?: string) {
   const response = await fetch('/api/auth/session', {
     method: 'POST',
@@ -18,7 +21,7 @@ export async function createServerSession(user: User, name?: string) {
   }
 
   const payload = (await response.json().catch(() => ({}))) as { message?: string };
-  throw new Error(payload.message ?? 'Kunde inte skapa en inloggad session.');
+  throw new Error(payload.message ?? SESSION_CREATION_ERROR_MESSAGE);
 }
 
 export function mapAuthError(error: unknown, fallbackMessage: string) {
