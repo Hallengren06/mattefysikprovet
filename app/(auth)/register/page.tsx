@@ -2,6 +2,13 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
+import { GoogleIcon } from '@/components/GoogleIcon';
+import { createServerSession, mapAuthError } from '@/lib/auth-client';
+import { normalizeEmail } from '@/lib/auth-utils';
+import { getFirebaseClientAuth, googleAuthProvider } from '@/lib/firebase-client';
+
+const REDIRECT_DELAY_MS = 1200;
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -12,21 +19,42 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     setMessage('');
+
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
-      if (res.ok) {
-        setMessage('✓ Konto skapat! Omdirigerar...');
-        setTimeout(() => (window.location.href = '/dashboard'), 1500);
-      } else {
-        const payload = (await res.json()) as { message?: string };
-        setMessage(payload.message ?? 'Något gick fel. Försök igen.');
+      const name = form.name.trim();
+      const credential = await createUserWithEmailAndPassword(
+        getFirebaseClientAuth(),
+        normalizeEmail(form.email),
+        form.password
+      );
+
+      if (name) {
+        await updateProfile(credential.user, { displayName: name });
       }
-    } catch {
-      setMessage('Något gick fel. Försök igen.');
+
+      await createServerSession(credential.user, name);
+      setMessage('✓ Konto skapat! Omdirigerar...');
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, REDIRECT_DELAY_MS);
+    } catch (error) {
+      setMessage(mapAuthError(error, 'Registreringen misslyckades. Försök igen.'));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleRegister() {
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const credential = await signInWithPopup(getFirebaseClientAuth(), googleAuthProvider);
+      const name = credential.user.displayName ?? undefined;
+      await createServerSession(credential.user, name);
+      window.location.href = '/dashboard';
+    } catch (error) {
+      setMessage(mapAuthError(error, 'Google-inloggningen misslyckades. Försök igen.'));
     } finally {
       setLoading(false);
     }
@@ -89,11 +117,28 @@ export default function RegisterPage() {
             >
               {loading ? 'Skapar konto...' : 'Skapa konto'}
             </button>
+
+            <div className="flex items-center gap-3 my-1">
+              <div className="flex-1 h-px bg-mafy-border" />
+              <span className="text-xs text-gray-600">eller</span>
+              <div className="flex-1 h-px bg-mafy-border" />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => void handleGoogleRegister()}
+              disabled={loading}
+              aria-label="Fortsätt med Google"
+              className="w-full bg-mafy-card2 border border-mafy-border hover:border-white/20 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-3 transition-colors disabled:opacity-60"
+            >
+              <GoogleIcon />
+              Fortsätt med Google
+            </button>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-5">
             Har du redan ett konto?{' '}
-            <Link href="/" className="text-brand hover:text-accent transition-colors font-medium">
+            <Link href="/login" className="text-brand hover:text-accent transition-colors font-medium">
               Logga in
             </Link>
           </p>

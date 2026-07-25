@@ -26,7 +26,8 @@ A Next.js platform for Swedish students preparing for Matematik- och fysikprovet
 
 3. Fill in Firebase values in `.env.local`:
 
-   - `NEXT_PUBLIC_FIREBASE_API_KEY` from Firebase Web app settings
+   - `NEXT_PUBLIC_FIREBASE_API_KEY` and `NEXT_PUBLIC_FIREBASE_PROJECT_ID` from Firebase Web app settings
+   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` only if you need a custom auth domain; otherwise the app falls back to `your-project-id.firebaseapp.com`
    - `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` from a Firebase service account key
    - `FIREBASE_ADMIN_EMAILS` as comma-separated emails allowed to access `/admin`
 
@@ -40,7 +41,7 @@ A Next.js platform for Swedish students preparing for Matematik- och fysikprovet
 
 ## Firebase Configuration
 
-- Enable **Authentication → Email/Password** in Firebase console.
+- Enable **Authentication → Email/Password** and **Authentication → Google** in Firebase console.
 - Create a **Firestore database** in production mode.
 - Deploy Firestore rules from `firestore.rules`.
 

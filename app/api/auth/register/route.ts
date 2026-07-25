@@ -1,5 +1,6 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { NextResponse } from 'next/server';
+import { normalizeEmail } from '@/lib/auth-utils';
 import { getFirestoreDb } from '@/lib/firebase-admin';
 import { createSessionCookie, getSessionCookieName, getSessionCookieOptions } from '@/lib/session';
 
@@ -28,8 +29,11 @@ function mapFirebaseAuthError(errorMessage: string) {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { name?: string; email?: string; password?: string };
+    const name = body.name?.trim();
+    const email = normalizeEmail(body.email);
+    const password = body.password;
 
-    if (!body.name || !body.email || !body.password) {
+    if (!name || !email || !password) {
       return NextResponse.json({ message: 'Namn, e-post och lösenord krävs.' }, { status: 400 });
     }
 
@@ -39,8 +43,8 @@ export async function POST(request: Request) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: body.email,
-          password: body.password,
+          email,
+          password,
           returnSecureToken: true
         })
       }
@@ -61,8 +65,8 @@ export async function POST(request: Request) {
     }
 
     await getFirestoreDb().collection('users').doc(payload.localId).set({
-      name: body.name,
-      email: payload.email ?? body.email,
+      name,
+      email: normalizeEmail(payload.email ?? email),
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp()
     });
