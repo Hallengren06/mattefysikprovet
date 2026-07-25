@@ -47,7 +47,8 @@ export default function RegisterPage() {
 
     try {
       const credential = await signInWithPopup(getFirebaseClientAuth(), googleAuthProvider);
-      await createServerSession(credential.user, credential.user.displayName ?? undefined);
+      const name = credential.user.displayName ?? undefined;
+      await createServerSession(credential.user, name);
       window.location.href = '/dashboard';
     } catch (error) {
       setMessage(mapAuthError(error, 'Google-inloggningen misslyckades. Försök igen.'));

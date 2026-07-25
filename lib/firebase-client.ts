@@ -21,6 +21,7 @@ function getFirebaseClientConfig() {
   return {
     apiKey: getRequiredClientEnv('NEXT_PUBLIC_FIREBASE_API_KEY', publicFirebaseEnv.apiKey),
     projectId,
+    // Most Firebase projects use the default auth domain derived from the project ID.
     authDomain: publicFirebaseEnv.authDomain || `${projectId}.firebaseapp.com`
   };
 }
