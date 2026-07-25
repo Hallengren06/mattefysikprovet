@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "title": "Introduktion till derivata",
+    "description": "En tydlig genomgång av derivatans definition och grundläggande regler.",
+    "youtubeId": "rAof9Ld5sOg",
+    "category": "Matematik",
+    "topic": "Derivata",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "title": "Integraler steg för steg",
+    "description": "Lär dig integration från grunden med tydliga exempel.",
+    "youtubeId": "rfG8ce4nNh0",
+    "category": "Matematik",
+    "topic": "Integraler",
+    "createdAt": "2024-01-02T00:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "title": "Elektromagnetism – grunderna",
+    "description": "Förstå elektromagnetism och Maxwells ekvationer.",
+    "youtubeId": "mHbSMHCnFtg",
+    "category": "Fysik",
+    "topic": "Elektromagnetism",
+    "createdAt": "2024-01-03T00:00:00.000Z"
+  }
+]

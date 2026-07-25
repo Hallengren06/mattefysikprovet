@@ -1,0 +1,46 @@
+CREATE TABLE IF NOT EXISTS users (
+  id BIGSERIAL PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  subscription_level TEXT NOT NULL DEFAULT 'free',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS tests (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,
+  year INTEGER NOT NULL,
+  duration INTEGER NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS test_questions (
+  id BIGSERIAL PRIMARY KEY,
+  test_id BIGINT NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
+  question_text TEXT NOT NULL,
+  correct_answer TEXT NOT NULL,
+  category TEXT NOT NULL,
+  topic TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_results (
+  id BIGSERIAL PRIMARY KEY,
+  user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  test_id BIGINT NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
+  score NUMERIC(5,2) NOT NULL,
+  time_taken INTEGER NOT NULL,
+  date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  answers JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+
+CREATE TABLE IF NOT EXISTS user_performance (
+  id BIGSERIAL PRIMARY KEY,
+  user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  topic TEXT NOT NULL,
+  success_rate NUMERIC(5,2) NOT NULL DEFAULT 0,
+  last_attempted TIMESTAMPTZ
+);
+
+COMMENT ON COLUMN user_performance.last_attempted IS 'NULL means the user has not attempted this topic yet.';

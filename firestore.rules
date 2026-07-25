@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /results/{resultId} {
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.userEmail is string
+                    && request.resource.data.testId is string
+                    && request.resource.data.testName is string
+                    && request.resource.data.category is string
+                    && request.resource.data.totalQuestions is int
+                    && request.resource.data.correctAnswers is int
+                    && request.resource.data.percentage is int
+                    && request.resource.data.totalQuestions > 0
+                    && request.resource.data.correctAnswers >= 0
+                    && request.resource.data.correctAnswers <= request.resource.data.totalQuestions
+                    && request.resource.data.percentage >= 0
+                    && request.resource.data.percentage <= 100
+                    && request.resource.data.createdAt == request.time;
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+  }
+}
