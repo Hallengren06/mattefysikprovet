@@ -26,8 +26,10 @@ function mapFirebaseAuthError(errorMessage: string) {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { email?: string; password?: string };
+    const email = body.email?.trim().toLowerCase();
+    const password = body.password;
 
-    if (!body.email || !body.password) {
+    if (!email || !password) {
       return NextResponse.json({ message: 'E-post och lösenord krävs.' }, { status: 400 });
     }
 
@@ -37,8 +39,8 @@ export async function POST(request: Request) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: body.email,
-          password: body.password,
+          email,
+          password,
           returnSecureToken: true
         })
       }
