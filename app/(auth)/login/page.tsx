@@ -115,6 +115,13 @@ export default function LoginPage() {
               Skapa konto
             </Link>
           </p>
+          <p className="text-center text-xs text-gray-500 mt-3">
+            Du kan också logga in direkt på{' '}
+            <Link href="/" className="text-brand hover:text-accent transition-colors font-medium">
+              startsidan
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>

@@ -48,7 +48,10 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error('Session creation error', error);
+    console.error(
+      'Session creation error',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
     return NextResponse.json({ message: 'Inloggningen misslyckades. Försök igen.' }, { status: 500 });
   }
 }

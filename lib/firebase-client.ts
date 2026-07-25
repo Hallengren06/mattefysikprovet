@@ -1,9 +1,13 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
-function getRequiredClientEnv(name: string) {
-  const value = process.env[name]?.trim();
+const publicFirebaseEnv = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim(),
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim(),
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.trim()
+};
 
+function getRequiredClientEnv(name: string, value: string | undefined) {
   if (!value) {
     throw new Error(`${name} is not set`);
   }
@@ -12,12 +16,12 @@ function getRequiredClientEnv(name: string) {
 }
 
 function getFirebaseClientConfig() {
-  const projectId = getRequiredClientEnv('NEXT_PUBLIC_FIREBASE_PROJECT_ID');
+  const projectId = getRequiredClientEnv('NEXT_PUBLIC_FIREBASE_PROJECT_ID', publicFirebaseEnv.projectId);
 
   return {
-    apiKey: getRequiredClientEnv('NEXT_PUBLIC_FIREBASE_API_KEY'),
+    apiKey: getRequiredClientEnv('NEXT_PUBLIC_FIREBASE_API_KEY', publicFirebaseEnv.apiKey),
     projectId,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.trim() || `${projectId}.firebaseapp.com`
+    authDomain: publicFirebaseEnv.authDomain || `${projectId}.firebaseapp.com`
   };
 }
 
