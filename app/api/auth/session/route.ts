@@ -1,5 +1,6 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { NextResponse } from 'next/server';
+import { normalizeEmail } from '@/lib/auth-utils';
 import { getFirebaseAuth, getFirestoreDb } from '@/lib/firebase-admin';
 import { createSessionCookie, getSessionCookieName, getSessionCookieOptions } from '@/lib/session';
 
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     const decodedToken = await getFirebaseAuth().verifyIdToken(idToken);
-    const email = decodedToken.email?.trim().toLowerCase();
+    const email = normalizeEmail(decodedToken.email);
 
     if (!email) {
       return NextResponse.json({ message: 'E-post saknas på kontot.' }, { status: 400 });
@@ -22,23 +23,25 @@ export async function POST(request: Request) {
     const name = body.name?.trim() || decodedToken.name?.trim() || null;
     const userRef = getFirestoreDb().collection('users').doc(decodedToken.uid);
     const snapshot = await userRef.get();
+    const userData: {
+      email: string;
+      name?: string;
+      createdAt?: FirebaseFirestore.FieldValue;
+      updatedAt: FirebaseFirestore.FieldValue;
+    } = {
+      email,
+      updatedAt: FieldValue.serverTimestamp()
+    };
+
+    if (name) {
+      userData.name = name;
+    }
 
     if (snapshot.exists) {
-      await userRef.set(
-        {
-          email,
-          ...(name ? { name } : {}),
-          updatedAt: FieldValue.serverTimestamp()
-        },
-        { merge: true }
-      );
+      await userRef.set(userData, { merge: true });
     } else {
-      await userRef.set({
-        email,
-        ...(name ? { name } : {}),
-        createdAt: FieldValue.serverTimestamp(),
-        updatedAt: FieldValue.serverTimestamp()
-      });
+      userData.createdAt = FieldValue.serverTimestamp();
+      await userRef.set(userData);
     }
 
     const sessionCookie = await createSessionCookie(idToken);

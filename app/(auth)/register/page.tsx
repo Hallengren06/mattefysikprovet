@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { GoogleIcon } from '@/components/GoogleIcon';
 import { createServerSession, mapAuthError } from '@/lib/auth-client';
+import { normalizeEmail } from '@/lib/auth-utils';
 import { getFirebaseClientAuth, googleAuthProvider } from '@/lib/firebase-client';
 
 export default function RegisterPage() {
@@ -21,7 +22,7 @@ export default function RegisterPage() {
       const name = form.name.trim();
       const credential = await createUserWithEmailAndPassword(
         getFirebaseClientAuth(),
-        form.email.trim().toLowerCase(),
+        normalizeEmail(form.email),
         form.password
       );
 
@@ -125,6 +126,7 @@ export default function RegisterPage() {
               type="button"
               onClick={() => void handleGoogleRegister()}
               disabled={loading}
+              aria-label="Fortsätt med Google"
               className="w-full bg-mafy-card2 border border-mafy-border hover:border-white/20 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-3 transition-colors disabled:opacity-60"
             >
               <GoogleIcon />

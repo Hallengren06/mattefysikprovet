@@ -1,5 +1,6 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { NextResponse } from 'next/server';
+import { normalizeEmail } from '@/lib/auth-utils';
 import { getFirestoreDb } from '@/lib/firebase-admin';
 import { createSessionCookie, getSessionCookieName, getSessionCookieOptions } from '@/lib/session';
 
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { name?: string; email?: string; password?: string };
     const name = body.name?.trim();
-    const email = body.email?.trim().toLowerCase();
+    const email = normalizeEmail(body.email);
     const password = body.password;
 
     if (!name || !email || !password) {
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
 
     await getFirestoreDb().collection('users').doc(payload.localId).set({
       name,
-      email: (payload.email ?? email).trim().toLowerCase(),
+      email: normalizeEmail(payload.email ?? email),
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp()
     });

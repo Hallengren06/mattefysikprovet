@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { normalizeEmail } from '@/lib/auth-utils';
 import { createSessionCookie, getSessionCookieName, getSessionCookieOptions } from '@/lib/session';
 
 function getFirebaseApiKey() {
@@ -26,7 +27,7 @@ function mapFirebaseAuthError(errorMessage: string) {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { email?: string; password?: string };
-    const email = body.email?.trim().toLowerCase();
+    const email = normalizeEmail(body.email);
     const password = body.password;
 
     if (!email || !password) {

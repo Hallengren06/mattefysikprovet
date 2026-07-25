@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { GoogleIcon } from '@/components/GoogleIcon';
 import { createServerSession, mapAuthError } from '@/lib/auth-client';
+import { normalizeEmail } from '@/lib/auth-utils';
 import { getFirebaseClientAuth, googleAuthProvider } from '@/lib/firebase-client';
 import { MafyLogo } from '@/components/MafyLogo';
 
@@ -72,7 +73,7 @@ export default function HomePage() {
     try {
       const credential = await signInWithEmailAndPassword(
         getFirebaseClientAuth(),
-        email.trim().toLowerCase(),
+        normalizeEmail(email),
         password
       );
 
@@ -260,6 +261,7 @@ export default function HomePage() {
                 type="button"
                 onClick={() => void handleGoogleLogin()}
                 disabled={loading}
+                aria-label="Fortsätt med Google"
                 className="w-full bg-mafy-card2 border border-mafy-border hover:border-white/20 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-3 transition-colors disabled:opacity-60"
               >
                 <GoogleIcon />
